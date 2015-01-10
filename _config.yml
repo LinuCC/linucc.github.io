@@ -1,6 +1,6 @@
 baseurl: "" # The subpath of your site. Use "" if you're hosting a blog at the root level.
 url: "linucc.github.io" # the base hostname & protocol for your site.
-title: "Test <3"
+title: "LinuCC's Sandbox"
 
 
 paginate: 3 #articles per page
