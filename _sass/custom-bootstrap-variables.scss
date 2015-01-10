@@ -1,0 +1,10 @@
+
+img.fading {
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+}
+
+img.fading:hover {
+	opacity: 1;
+	filter: alpha(opacity=100);
+}
