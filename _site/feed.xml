@@ -5,14 +5,14 @@
     <description></description>
     <link>linucc.github.io/</link>
     <atom:link href="linucc.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 02 Mar 2015 02:42:41 +0100</pubDate>
-    <lastBuildDate>Mon, 02 Mar 2015 02:42:41 +0100</lastBuildDate>
+    <pubDate>Mon, 02 Mar 2015 02:45:32 +0100</pubDate>
+    <lastBuildDate>Mon, 02 Mar 2015 02:45:32 +0100</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
         <title>Docker with Arch Linux and Raspberry Pi 2</title>
         <description>&lt;p&gt;The new and faster Raspberry Pi 2 finally allows more sophisticated usage of services for home media and networking.
-Combine that with the superfast &lt;a href=&quot;https://www.docker.com/&quot;&gt;Docker&lt;/a&gt; for better service management and &lt;a href=&quot;https://consul.io/&quot;&gt;Consul&lt;/a&gt; for health checks and you get an awesome system that is really fun to play with!&lt;/p&gt;
+Combine that with the superfast &lt;a href=&quot;https://www.docker.com/&quot;&gt;Docker&lt;/a&gt; for better service management and &lt;a href=&quot;https://consul.io/&quot;&gt;Consul&lt;/a&gt; for health checks and you get an awesome system that is really fun to play with (and possibly a bit overkill ;) )!&lt;/p&gt;
 
 &lt;p&gt;I have used the first version of the Raspberry Pi for many tasks.
 It was a print-server with cups, a media-center with minidlna and shared files with samba.

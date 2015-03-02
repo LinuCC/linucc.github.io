@@ -4,7 +4,7 @@ tags: [docker, raspberry-pi-2, arch-linux]
 ---
 
 The new and faster Raspberry Pi 2 finally allows more sophisticated usage of services for home media and networking.
-Combine that with the superfast [Docker](https://www.docker.com/) for better service management and [Consul](https://consul.io/) for health checks and you get an awesome system that is really fun to play with!
+Combine that with the superfast [Docker](https://www.docker.com/) for better service management and [Consul](https://consul.io/) for health checks and you get an awesome system that is really fun to play with (and possibly a bit overkill ;) )!
 
 I have used the first version of the Raspberry Pi for many tasks.
 It was a print-server with cups, a media-center with minidlna and shared files with samba.
