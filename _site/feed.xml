@@ -5,9 +5,129 @@
     <description></description>
     <link>linucc.github.io/</link>
     <atom:link href="linucc.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 02 Mar 2015 02:45:32 +0100</pubDate>
-    <lastBuildDate>Mon, 02 Mar 2015 02:45:32 +0100</lastBuildDate>
+    <pubDate>Sat, 28 Mar 2015 16:59:58 +0100</pubDate>
+    <lastBuildDate>Sat, 28 Mar 2015 16:59:58 +0100</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Doctrine2 Three-way many-to-many table result offset</title>
+        <description>&lt;p&gt;There seems to be a bug with doctrine 2 when using a table looking like this:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;a_id&lt;/td&gt;
+      &lt;td&gt;b_id&lt;/td&gt;
+      &lt;td&gt;c_id&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Here we have three foreign keys to other tables.
+Together they are also the primary key of the table.&lt;/p&gt;
+
+&lt;p&gt;Now lets say we want to fetch all entries joined with the entries of table &lt;code&gt;C&lt;/code&gt; using DQL:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-php&quot;&gt;$query = $this-&amp;gt;_em-&amp;gt;createQuery(
+  &#39;SELECT connector, c
+  FROM Connector connector
+  INNER JOIN connector.c c
+&#39;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I would expect something like this result with &lt;code&gt;Query::HYDRATE_ARRAY&lt;/code&gt;:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;connector.a_id&lt;/td&gt;
+      &lt;td&gt;connector.b_id&lt;/td&gt;
+      &lt;td&gt;connector.c_id&lt;/td&gt;
+      &lt;td&gt;c.id&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Instead, I get this:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;connector.a_id&lt;/td&gt;
+      &lt;td&gt;connector.b_id&lt;/td&gt;
+      &lt;td&gt;connector.c_id&lt;/td&gt;
+      &lt;td&gt;c.id&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;null&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The data of table &lt;code&gt;C&lt;/code&gt; are all displaced by 1 row, with the last row not having any data.
+This also applies to the object hydration.&lt;/p&gt;
+
+&lt;p&gt;It seems to be a problem related to the composite primary key.
+Luckily I have access to the database itself, so I could circumvent the problem by adding an additional &lt;code&gt;id&lt;/code&gt;-column to the table, and making that one the primary key.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 28 Mar 2015 00:00:00 +0100</pubDate>
+        <link>linucc.github.io/doctrine2-threeway-id</link>
+        <guid isPermaLink="true">linucc.github.io/doctrine2-threeway-id</guid>
+        
+        <category>doctrine2</category>
+        
+        <category>dql</category>
+        
+        
+      </item>
     
       <item>
         <title>Docker with Arch Linux and Raspberry Pi 2</title>

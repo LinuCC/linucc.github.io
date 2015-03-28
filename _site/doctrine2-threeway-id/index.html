@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="/public/stylesheets/styles.css">
     <link rel="stylesheet" href="/public/stylesheets/pygment_trac.css">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="canonical" href="linucc.github.io/docker-arch-rpi2">
+    <link rel="canonical" href="linucc.github.io/doctrine2-threeway-id">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
       <link rel="icon" type="image/x-icon"  href="/favicon.ico" />
-    <title>Docker with Arch Linux and Raspberry Pi 2 | LinuCC's Sandbox</title>
+    <title>Doctrine2 Three-way many-to-many table result offset | LinuCC's Sandbox</title>
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -53,17 +53,15 @@
 
 
           <div class="post-title">
-    <h1>Docker with Arch Linux and Raspberry Pi 2</h1>
-    <p class="text-muted">02 Mar 2015 | <i class="fa fa-tag"></i>
+    <h1>Doctrine2 Three-way many-to-many table result offset</h1>
+    <p class="text-muted">28 Mar 2015 | <i class="fa fa-tag"></i>
   
     
   
   
-  <a class="text-muted" href="/tags/#docker">docker</a>,
+  <a class="text-muted" href="/tags/#doctrine2">doctrine2</a>,
   
-  <a class="text-muted" href="/tags/#raspberry-pi-2">raspberry-pi-2</a>,
-  
-  <a class="text-muted" href="/tags/#arch-linux">arch-linux</a>
+  <a class="text-muted" href="/tags/#dql">dql</a>
   
 
 
@@ -71,62 +69,112 @@
 
 </div>
 
-  <p>The new and faster Raspberry Pi 2 finally allows more sophisticated usage of services for home media and networking.
-Combine that with the superfast <a href="https://www.docker.com/">Docker</a> for better service management and <a href="https://consul.io/">Consul</a> for health checks and you get an awesome system that is really fun to play with (and possibly a bit overkill ;) )!</p>
+  <p>There seems to be a bug with doctrine 2 when using a table looking like this:</p>
 
-<p>I have used the first version of the Raspberry Pi for many tasks.
-It was a print-server with cups, a media-center with minidlna and shared files with samba.
-It is small, configurable and power-saving.
-It also has tons of documentation available online.
-The major downside of the Raspberry Pi v1 is its limited ressources:
-If I use two services at the same time, it gets really slow with a 700Mhz ARMv6 processor.
-Granted, with its 40€ price tag this is to be expected.
-Now along comes the shiny new Raspberry Pi v2.
-With a quad-core 900Mhz and 1GB of RAM it should be much faster than its predecessor.
-The new processor also features the ARMv7 processor generation, meaning more software will be compatible with the new Raspberry Pi.</p>
+<table>
+  <tbody>
+    <tr>
+      <td>a_id</td>
+      <td>b_id</td>
+      <td>c_id</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
 
-<h2 id="basic-setup">Basic setup</h2>
+<p>Here we have three foreign keys to other tables.
+Together they are also the primary key of the table.</p>
 
-<h3 id="arch-linux">Arch Linux</h3>
+<p>Now lets say we want to fetch all entries joined with the entries of table <code>C</code> using DQL:</p>
 
-<p>Installing Arch Linux on the Raspberry Pi is pretty straightforward.
-Just follow the <a href="http://archlinuxarm.org/platforms/armv7/broadcom/raspberry-pi-2">guide on archlinuxarm.org</a>.
-If you have an older installation of Arch for the old Raspberry Pi, I recommend you create a fresh installation.
-This way you dont need to use the armv6-packages (Possible dependency-hell) or upgrade them to armv7.</p>
-
-<h3 id="docker">Docker</h3>
-
-<p>To install Docker, login to your Raspberry Pi with SSH and type <code>pacman -Syu docker</code> to update the system and install docker.<br />
-If you are logged in with a different user than root, you need to add yourself to the docker-group with <code>gpasswd -a user docker</code> and switch to the group with <code>newgrp docker</code>.
-Note that the last command will only affect the current session.
-Now you only need to start docker <code>systemctl start docker</code> and optionally autostart it on boot with <code>systemctl enable docker</code>.
-Check if docker is up and running with <code>docker info</code>.
-Thats it!</p>
-
-<h2 id="base-image-for-docker">Base image for Docker</h2>
-
-<p>Since the Raspberry Pi 2 uses a different architecture than the old Raspberry Pi, the kernel differs, too.
-This means that we cannot use already existing, prepackaged docker-images for Arch Linux like the repository <a href="https://registry.hub.docker.com/u/cellofellow/rpi-arch/">cellofellow/rpi-arch</a>.
-Since there is no base-image for Arch Linux on the Raspberry Pi 2 (I still struggle to create a working and small automatically building image), we have to create it ourselves.</p>
-
-<p>To do that, create a new directory on the Raspberry Pi to store the Dockerfile in.
-Fetch the current Arch Linux archive with</p>
-
-<pre><code>curl -L http://archlinuxarm.org/os/ArchLinuxARM-rpi-2-latest.tar.gz -o archlinux.tar.gz
+<pre><code class="language-php">$query = $this-&gt;_em-&gt;createQuery(
+  'SELECT connector, c
+  FROM Connector connector
+  INNER JOIN connector.c c
+');
 </code></pre>
 
-<p>Then create a new file named <code>Dockerfile</code> with the following content:</p>
+<p>I would expect something like this result with <code>Query::HYDRATE_ARRAY</code>:</p>
 
-<pre><code>FROM scratch
+<table>
+  <tbody>
+    <tr>
+      <td>connector.a_id</td>
+      <td>connector.b_id</td>
+      <td>connector.c_id</td>
+      <td>c.id</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
 
-ADD archlinux.tar.gz /
+<p>Instead, I get this:</p>
 
-CMD ["/bin/bash"]
-</code></pre>
+<table>
+  <tbody>
+    <tr>
+      <td>connector.a_id</td>
+      <td>connector.b_id</td>
+      <td>connector.c_id</td>
+      <td>c.id</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>null</td>
+    </tr>
+  </tbody>
+</table>
 
-<p>Running <code>docker build -t base-arch-rpi2 .</code> will extract the archive into the root of the new image named <code>base-arch-rpi2</code>.</p>
+<p>The data of table <code>C</code> are all displaced by 1 row, with the last row not having any data.
+This also applies to the object hydration.</p>
 
-<p>You can now start a container using the image with <code>docker run -ti base-arch-rpi2</code> or create children with <code>FROM base-arch-rpi2</code> in your Dockerfile.</p>
+<p>It seems to be a problem related to the composite primary key.
+Luckily I have access to the database itself, so I could circumvent the problem by adding an additional <code>id</code>-column to the table, and making that one the primary key.</p>
 
 
 <!-- <div class="share-btns">
@@ -135,7 +183,7 @@ CMD ["/bin/bash"]
 
 
  
-<a class="btn btn-small btn-sm twitter" href="http://twitter.com/share?text=Docker with Arch Linux and Raspberry Pi 2"
+<a class="btn btn-small btn-sm twitter" href="http://twitter.com/share?text=Doctrine2 Three-way many-to-many table result offset"
            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
           <i class="fa fa-twitter fa-lg"></i>
           Twitter
@@ -183,22 +231,21 @@ CMD ["/bin/bash"]
   
     <div class="post-navs row">
       
-      
-
         <div class="col-md-6 post-nav">
+
           <h3 class="section-header">
-            Newer
-            
-              <span class="text-muted"> &middot; </span>
-              <a href="/archive">View Archive (2)</a>
-            
+            Older
+            <span class="text-muted"> &middot; </span>
+            <a href="/archive">View Archive (2)</a>
           </h3>
 
-          <h2 class="post-title-link"><a href="/doctrine2-threeway-id">Doctrine2 Three-way many-to-many table result offset</a></h2>
-          <p>There seems to be a bug with doctrine 2 when using a table looking like this:</p>
+          <h2 class="post-title-link"><a href="/docker-arch-rpi2">Docker with Arch Linux and Raspberry Pi 2</a></h2>
+          <p>The new and faster Raspberry Pi 2 finally allows more sophisticated usage of services for home media and networking.
+Combine that with the superfast <a href="https://www.docker.com/">Docker</a> for better service management and <a href="https://consul.io/">Consul</a> for health checks and you get an awesome system that is really fun to play with (and possibly a bit overkill ;) )!</p>
 
 
         </div>
+      
       
     </div>
   
