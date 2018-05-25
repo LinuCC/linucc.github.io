@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>LinuCC&#39;s Sandbox</title>
+    <title>LinuCC's Sandbox</title>
     <description></description>
     <link>linucc.github.io/</link>
     <atom:link href="linucc.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 20 May 2015 02:43:42 +0200</pubDate>
-    <lastBuildDate>Wed, 20 May 2015 02:43:42 +0200</lastBuildDate>
-    <generator>Jekyll v2.4.0</generator>
+    <pubDate>Fri, 25 May 2018 11:52:07 +0200</pubDate>
+    <lastBuildDate>Fri, 25 May 2018 11:52:07 +0200</lastBuildDate>
+    <generator>Jekyll v3.7.3</generator>
     
       <item>
         <title>Doctrine2 Three-way many-to-many table result offset</title>
@@ -41,16 +41,16 @@
 &lt;p&gt;Here we have three foreign keys to other tables.
 Together they are also the primary key of the table.&lt;/p&gt;
 
-&lt;p&gt;Now lets say we want to fetch all entries joined with the entries of table &lt;code&gt;C&lt;/code&gt; using DQL:&lt;/p&gt;
+&lt;p&gt;Now lets say we want to fetch all entries joined with the entries of table &lt;code class=&quot;highlighter-rouge&quot;&gt;C&lt;/code&gt; using DQL:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-php&quot;&gt;$query = $this-&amp;gt;_em-&amp;gt;createQuery(
-  &#39;SELECT connector, c
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;_em&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;createQuery&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;s1&quot;&gt;'SELECT connector, c
   FROM Connector connector
   INNER JOIN connector.c c
-&#39;);
-&lt;/code&gt;&lt;/pre&gt;
+'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;I would expect something like this result with &lt;code&gt;Query::HYDRATE_ARRAY&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;I would expect something like this result with &lt;code class=&quot;highlighter-rouge&quot;&gt;Query::HYDRATE_ARRAY&lt;/code&gt;:&lt;/p&gt;
 
 &lt;table&gt;
   &lt;tbody&gt;
@@ -112,11 +112,11 @@ Together they are also the primary key of the table.&lt;/p&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;The data of table &lt;code&gt;C&lt;/code&gt; are all displaced by 1 row, with the last row not having any data.
+&lt;p&gt;The data of table &lt;code class=&quot;highlighter-rouge&quot;&gt;C&lt;/code&gt; are all displaced by 1 row, with the last row not having any data.
 This also applies to the object hydration.&lt;/p&gt;
 
 &lt;p&gt;It seems to be a problem related to the composite primary key.
-Luckily I have access to the database itself, so I could circumvent the problem by adding an additional &lt;code&gt;id&lt;/code&gt;-column to the table, and making that one the primary key.&lt;/p&gt;
+Luckily I have access to the database itself, so I could circumvent the problem by adding an additional &lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt;-column to the table, and making that one the primary key.&lt;/p&gt;
 </description>
         <pubDate>Sat, 28 Mar 2015 00:00:00 +0100</pubDate>
         <link>linucc.github.io/doctrine2-threeway-id</link>
@@ -147,20 +147,20 @@ The new processor also features the ARMv7 processor generation, meaning more sof
 
 &lt;h2 id=&quot;basic-setup&quot;&gt;Basic setup&lt;/h2&gt;
 
-&lt;h3 id=&quot;arch-linux&quot;&gt;Arch Linux&lt;/h3&gt;
+&lt;p&gt;###Arch Linux&lt;/p&gt;
 
 &lt;p&gt;Installing Arch Linux on the Raspberry Pi is pretty straightforward.
 Just follow the &lt;a href=&quot;http://archlinuxarm.org/platforms/armv7/broadcom/raspberry-pi-2&quot;&gt;guide on archlinuxarm.org&lt;/a&gt;.
 If you have an older installation of Arch for the old Raspberry Pi, I recommend you create a fresh installation.
 This way you dont need to use the armv6-packages (Possible dependency-hell) or upgrade them to armv7.&lt;/p&gt;
 
-&lt;h3 id=&quot;docker&quot;&gt;Docker&lt;/h3&gt;
+&lt;p&gt;###Docker&lt;/p&gt;
 
-&lt;p&gt;To install Docker, login to your Raspberry Pi with SSH and type &lt;code&gt;pacman -Syu docker&lt;/code&gt; to update the system and install docker.&lt;br /&gt;
-If you are logged in with a different user than root, you need to add yourself to the docker-group with &lt;code&gt;gpasswd -a user docker&lt;/code&gt; and switch to the group with &lt;code&gt;newgrp docker&lt;/code&gt;.
+&lt;p&gt;To install Docker, login to your Raspberry Pi with SSH and type &lt;code class=&quot;highlighter-rouge&quot;&gt;pacman -Syu docker&lt;/code&gt; to update the system and install docker.&lt;br /&gt;
+If you are logged in with a different user than root, you need to add yourself to the docker-group with &lt;code class=&quot;highlighter-rouge&quot;&gt;gpasswd -a user docker&lt;/code&gt; and switch to the group with &lt;code class=&quot;highlighter-rouge&quot;&gt;newgrp docker&lt;/code&gt;.
 Note that the last command will only affect the current session.
-Now you only need to start docker &lt;code&gt;systemctl start docker&lt;/code&gt; and optionally autostart it on boot with &lt;code&gt;systemctl enable docker&lt;/code&gt;.
-Check if docker is up and running with &lt;code&gt;docker info&lt;/code&gt;.
+Now you only need to start docker &lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl start docker&lt;/code&gt; and optionally autostart it on boot with &lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl enable docker&lt;/code&gt;.
+Check if docker is up and running with &lt;code class=&quot;highlighter-rouge&quot;&gt;docker info&lt;/code&gt;.
 Thats it!&lt;/p&gt;
 
 &lt;h2 id=&quot;base-image-for-docker&quot;&gt;Base image for Docker&lt;/h2&gt;
@@ -172,21 +172,21 @@ Since there is no base-image for Arch Linux on the Raspberry Pi 2 (I still strug
 &lt;p&gt;To do that, create a new directory on the Raspberry Pi to store the Dockerfile in.
 Fetch the current Arch Linux archive with&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;curl -L http://archlinuxarm.org/os/ArchLinuxARM-rpi-2-latest.tar.gz -o archlinux.tar.gz
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl -L http://archlinuxarm.org/os/ArchLinuxARM-rpi-2-latest.tar.gz -o archlinux.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Then create a new file named &lt;code&gt;Dockerfile&lt;/code&gt; with the following content:&lt;/p&gt;
+&lt;p&gt;Then create a new file named &lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; with the following content:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;FROM scratch
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FROM scratch
 
 ADD archlinux.tar.gz /
 
 CMD [&quot;/bin/bash&quot;]
-&lt;/code&gt;&lt;/pre&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Running &lt;code&gt;docker build -t base-arch-rpi2 .&lt;/code&gt; will extract the archive into the root of the new image named &lt;code&gt;base-arch-rpi2&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Running &lt;code class=&quot;highlighter-rouge&quot;&gt;docker build -t base-arch-rpi2 .&lt;/code&gt; will extract the archive into the root of the new image named &lt;code class=&quot;highlighter-rouge&quot;&gt;base-arch-rpi2&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;You can now start a container using the image with &lt;code&gt;docker run -ti base-arch-rpi2&lt;/code&gt; or create children with &lt;code&gt;FROM base-arch-rpi2&lt;/code&gt; in your Dockerfile.&lt;/p&gt;
+&lt;p&gt;You can now start a container using the image with &lt;code class=&quot;highlighter-rouge&quot;&gt;docker run -ti base-arch-rpi2&lt;/code&gt; or create children with &lt;code class=&quot;highlighter-rouge&quot;&gt;FROM base-arch-rpi2&lt;/code&gt; in your Dockerfile.&lt;/p&gt;
 </description>
         <pubDate>Mon, 02 Mar 2015 00:00:00 +0100</pubDate>
         <link>linucc.github.io/docker-arch-rpi2</link>
