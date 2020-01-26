@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[LinuCC's Blog]]></title><description><![CDATA[So much to discover. So little time.]]></description><link>https://linu.cc</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 26 Jan 2020 15:13:36 GMT</lastBuildDate><item><title><![CDATA[Doctrine2 three-way many-to-many table result offset]]></title><description><![CDATA[There seems to be a bug with doctrine 2 when using a table looking like this: a_id b_id c_id 1 1 1 2 2 2 3 3 3 Here we have three foreign…]]></description><link>https://linu.cc/doctrine-3way-many-to-many/</link><guid isPermaLink="false">https://linu.cc/doctrine-3way-many-to-many/</guid><pubDate>Sat, 28 Mar 2015 03:30:33 GMT</pubDate><content:encoded>&lt;p&gt;There seems to be a bug with doctrine 2 when using a table looking like this:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;a_id&lt;/th&gt;
+&lt;th&gt;b_id&lt;/th&gt;
+&lt;th&gt;c_id&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Here we have three foreign keys to other tables.
+Together they are also the primary key of the table.&lt;/p&gt;
+&lt;p&gt;Now lets say we want to fetch all entries joined with the entries of table &lt;code class=&quot;language-text&quot;&gt;C&lt;/code&gt; using DQL:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;php&quot;&gt;&lt;pre class=&quot;language-php&quot;&gt;&lt;code class=&quot;language-php&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$query&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;$this&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt;&lt;span class=&quot;token property&quot;&gt;_em&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;createQuery&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;token single-quoted-string string&quot;&gt;&apos;SELECT connector, c
+  FROM Connector connector
+  INNER JOIN connector.c c
+&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I would expect something like this result with &lt;code class=&quot;language-text&quot;&gt;Query::HYDRATE_ARRAY&lt;/code&gt;:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;connector.a_id&lt;/th&gt;
+&lt;th&gt;connector.b_id&lt;/th&gt;
+&lt;th&gt;connector.c_id&lt;/th&gt;
+&lt;th&gt;c.id&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Instead, I get this:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;connector.a_id&lt;/th&gt;
+&lt;th&gt;connector.b_id&lt;/th&gt;
+&lt;th&gt;connector.c_id&lt;/th&gt;
+&lt;th&gt;c.id&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;null&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The data of table &lt;code class=&quot;language-text&quot;&gt;C&lt;/code&gt; are all displaced by 1 row, with the last row not having any data.
+This also applies to the object hydration.&lt;/p&gt;
+&lt;p&gt;It seems to be a problem related to the composite primary key.
+Luckily I have access to the database itself, so I could circumvent the problem by adding an additional &lt;code class=&quot;language-text&quot;&gt;id&lt;/code&gt;-column to the table, and making that one the primary key.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Docker with Arch Linux and Raspberry Pi 2]]></title><description><![CDATA[The new and faster Raspberry Pi 2 finally allows more sophisticated usage of services for home media and networking.
+Combine that with the…]]></description><link>https://linu.cc/docker-arch-rpi2/</link><guid isPermaLink="false">https://linu.cc/docker-arch-rpi2/</guid><pubDate>Mon, 02 Mar 2015 03:30:33 GMT</pubDate><content:encoded>&lt;p&gt;The new and faster Raspberry Pi 2 finally allows more sophisticated usage of services for home media and networking.
+Combine that with the superfast &lt;a href=&quot;https://www.docker.com/&quot;&gt;Docker&lt;/a&gt; for better service management and &lt;a href=&quot;https://consul.io/&quot;&gt;Consul&lt;/a&gt; for health checks and you get an awesome system that is really fun to play with (and possibly a bit overkill ;) )!&lt;/p&gt;
+&lt;p&gt;I have used the first version of the Raspberry Pi for many tasks.
+It was a print-server with cups, a media-center with minidlna and shared files with samba.
+It is small, configurable and power-saving.
+It also has tons of documentation available online.
+The major downside of the Raspberry Pi v1 is its limited ressources:
+If I use two services at the same time, it gets really slow with a 700Mhz ARMv6 processor.
+Granted, with its 40€ price tag this is to be expected.
+Now along comes the shiny new Raspberry Pi v2.
+With a quad-core 900Mhz and 1GB of RAM it should be much faster than its predecessor.
+The new processor also features the ARMv7 processor generation, meaning more software will be compatible with the new Raspberry Pi.&lt;/p&gt;
+&lt;h2&gt;Basic setup&lt;/h2&gt;
+&lt;h3&gt;Arch Linux&lt;/h3&gt;
+&lt;p&gt;Installing Arch Linux on the Raspberry Pi is pretty straightforward.
+Just follow the &lt;a href=&quot;http://archlinuxarm.org/platforms/armv7/broadcom/raspberry-pi-2&quot;&gt;guide on archlinuxarm.org&lt;/a&gt;.
+If you have an older installation of Arch for the old Raspberry Pi, I recommend you create a fresh installation.
+This way you dont need to use the armv6-packages (Possible dependency-hell) or upgrade them to armv7.&lt;/p&gt;
+&lt;h3&gt;Docker&lt;/h3&gt;
+&lt;p&gt;To install Docker, login to your Raspberry Pi with SSH and type &lt;code class=&quot;language-text&quot;&gt;pacman -Syu docker&lt;/code&gt; to update the system and install docker.&lt;br&gt;
+If you are logged in with a different user than root, you need to add yourself to the docker-group with &lt;code class=&quot;language-text&quot;&gt;gpasswd -a user docker&lt;/code&gt; and switch to the group with &lt;code class=&quot;language-text&quot;&gt;newgrp docker&lt;/code&gt;.
+Note that the last command will only affect the current session.
+Now you only need to start docker &lt;code class=&quot;language-text&quot;&gt;systemctl start docker&lt;/code&gt; and optionally autostart it on boot with &lt;code class=&quot;language-text&quot;&gt;systemctl enable docker&lt;/code&gt;.
+Check if docker is up and running with &lt;code class=&quot;language-text&quot;&gt;docker info&lt;/code&gt;.
+Thats it!&lt;/p&gt;
+&lt;h2&gt;Base image for Docker&lt;/h2&gt;
+&lt;p&gt;Since the Raspberry Pi 2 uses a different architecture than the old Raspberry Pi, the kernel differs, too.
+This means that we cannot use already existing, prepackaged docker-images for Arch Linux like the repository &lt;a href=&quot;https://registry.hub.docker.com/u/cellofellow/rpi-arch/&quot;&gt;cellofellow/rpi-arch&lt;/a&gt;.
+Since there is no base-image for Arch Linux on the Raspberry Pi 2 (I still struggle to create a working and small automatically building image), we have to create it ourselves.&lt;/p&gt;
+&lt;p&gt;To do that, create a new directory on the Raspberry Pi to store the Dockerfile in.
+Fetch the current Arch Linux archive with&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;curl -L http://archlinuxarm.org/os/ArchLinuxARM-rpi-2-latest.tar.gz -o archlinux.tar.gz&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then create a new file named &lt;code class=&quot;language-text&quot;&gt;Dockerfile&lt;/code&gt; with the following content:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;FROM scratch
+
+ADD archlinux.tar.gz /
+
+CMD [&amp;quot;/bin/bash&amp;quot;]&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Running &lt;code class=&quot;language-text&quot;&gt;docker build -t base-arch-rpi2 .&lt;/code&gt; will extract the archive into the root of the new image named &lt;code class=&quot;language-text&quot;&gt;base-arch-rpi2&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;You can now start a container using the image with &lt;code class=&quot;language-text&quot;&gt;docker run -ti base-arch-rpi2&lt;/code&gt; or create children with &lt;code class=&quot;language-text&quot;&gt;FROM base-arch-rpi2&lt;/code&gt; in your Dockerfile.&lt;/p&gt;</content:encoded></item></channel></rss>
